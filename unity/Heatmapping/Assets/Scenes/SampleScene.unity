@@ -382,9 +382,9 @@ MonoBehaviour:
   height: 0
   heatmapGradient:
     serializedVersion: 2
-    key0: {r: 0, g: 0.32636452, b: 1, a: 1}
+    key0: {r: 0, g: 0.32636452, b: 1, a: 0}
     key1: {r: 0.3610867, g: 0.07075471, b: 1, a: 1}
-    key2: {r: 0.2660625, g: 1, b: 0, a: 0}
+    key2: {r: 0.2660625, g: 1, b: 0, a: 0.78431374}
     key3: {r: 1, g: 1, b: 0, a: 0}
     key4: {r: 1, g: 0, b: 0, a: 0}
     key5: {r: 1, g: 0, b: 0, a: 0}
@@ -400,7 +400,7 @@ MonoBehaviour:
     ctime7: 0
     atime0: 0
     atime1: 65535
-    atime2: 0
+    atime2: 65535
     atime3: 0
     atime4: 0
     atime5: 0
@@ -409,7 +409,7 @@ MonoBehaviour:
     m_Mode: 0
     m_NumColorKeys: 5
     m_NumAlphaKeys: 2
-  radius: 5
+  radius: 16
   exportTarget: {fileID: 1351128747}
   detail: 0.5
   canvas: {fileID: 531591856}

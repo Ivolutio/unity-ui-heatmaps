@@ -32,7 +32,7 @@ public class Heatmapping : MonoBehaviour
             heatMap.AddPosition(Mathf.RoundToInt(Input.mousePosition.x), Mathf.RoundToInt(Input.mousePosition.y));
         }
 
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             var tex = heatMap.Export(heatmapGradient, radius);
             exportTarget.sprite = Sprite.Create(tex, new Rect(0f, 0f, tex.width, tex.height), new Vector2(.5f, .5f));
@@ -98,35 +98,81 @@ public class Heatmapping : MonoBehaviour
             //tex.Apply();
             //return tex;
 
+            //float[,] map = new float[width, height];
+            //for (int x = 0; x < width; x++)
+            //{
+            //    for (int y = 0; y < height; y++)
+            //    {
+            //        float value = (float)data[x, y] / hightestValue;
+            //        map[x, y] += value;
+            //        for (int i = 0; i < radius; i++)
+            //        {
+            //            float nValue = (value / radius) * i;
+            //            if (x - i >= 0)
+            //                map[x - i, y] += nValue;
+            //            if (x + i < width)
+            //                map[x + i, y] += nValue;
+            //            if (y - i >= 0)
+            //                map[x, y - i] += nValue;
+            //            if (y + i < height)
+            //                map[x, y + i] += nValue;
+            //            if (x - i >= 0 && y + i < height)
+            //                map[x - i, y + i] += nValue;
+            //            if (x + i < width && y + i < height)
+            //                map[x + i, y + i] += nValue;
+            //            if (x - i >= 0 && y - i >= 0)
+            //                map[x - i, y - i] += nValue;
+            //            if (x + i < width && y - i >= 0)
+            //                map[x + i, y - i] += nValue;
+            //        }
+            //    }
+            //}
+            //float[,] map = new float[width, height];
+            //for (int x = 0; x < width; x++)
+            //{
+            //    for (int y = 0; y < height; y++)
+            //    {
+            //        float value = (float)data[x, y] / hightestValue;
+
+            //        for (int x2 = 0; x2 < width; x2++)
+            //        {
+            //            for (int y2 = 0; y2 < height; y2++)
+            //            {
+            //                float dx = x2 - x;
+            //                float dy = y2 - y;
+            //                float d = Mathf.Sqrt(dx * dx + dy * dy);
+            //                float nValue = value * Mathf.Min(Mathf.Max((radius - d) / radius, 0), 1);
+            //                map[x2, y2] += nValue;
+            //            }
+            //        }
+            //    }
+            //}
+
             float[,] map = new float[width, height];
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
                 {
                     float value = (float)data[x, y] / hightestValue;
-                    map[x, y] += value;
-                    for (int i = 0; i < radius; i++)
+
+                    int sx = (x - radius) > 0 ? (x - radius) : 0;
+                    int ex = (x + radius) < (width - 1) ? (x + radius) : (width - 1);
+                    int sy = (y - radius) > 0 ? (y - radius) : 0;
+                    int ey = (y + radius) < (height - 1) ? (y + radius) : (height - 1);
+                    for (int x2 = sx; x2 < ex; x2++)
                     {
-                        float nValue = (value / radius) * i;
-                        if (x - i >= 0)
-                            map[x - i, y] += nValue;
-                        if (x + i < width)
-                            map[x + i, y] += nValue;
-                        if (y - i >= 0)
-                            map[x, y - i] += nValue;
-                        if (y + i < height)
-                            map[x, y + i] += nValue;
-                        if (x - i >= 0 && y + i < height)
-                            map[x - i, y + i] += nValue;
-                        if (x + i < width && y + i < height)
-                            map[x + i, y + i] += nValue;
-                        if (x - i >= 0 && y - i >= 0)
-                            map[x - i, y - i] += nValue;
-                        if (x + i < width && y - i >= 0)
-                            map[x + i, y - i] += nValue;
+                        for (int y2 = sy; y2 < ey; y2++)
+                        {
+                            float dx = x2 - x;
+                            float dy = y2 - y;
+                            float d = Mathf.Sqrt(dx * dx + dy * dy);
+                            float nValue = value * Mathf.Min(Mathf.Max((radius - d) / radius, 0), 1);
+                            map[x2, y2] += nValue;
+                        }
                     }
                 }
             }
+
 
             //Write texture
             var tex = new Texture2D(width, height);
@@ -134,17 +180,7 @@ public class Heatmapping : MonoBehaviour
             {
                 for (int y = 0; y < height; y++)
                 {
-                    Color c = Color.white;
-                    if (map[x, y] != 0)
-                    {
-                        //Debug.Log(map[x, y]);
-                        c = gradient.Evaluate(map[x, y]);
-                        //c.a = .5f;
-                    }
-                    else
-                    {
-                        c.a = 0f;
-                    }
+                    Color c = gradient.Evaluate(map[x, y]);
                     tex.SetPixel(x, y, c);
                 }
             }
